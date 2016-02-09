@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84d1f824-7c11-44af-8c68-750ec4fb7ba7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stanford_corenlp_pywrapper/lib/corenlpwrapper.jar" afterPath="$PROJECT_DIR$/stanford_corenlp_pywrapper/lib/corenlpwrapper.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stanford_corenlp_pywrapper/javasrc/corenlp/JsonPipeline.java" afterPath="$PROJECT_DIR$/stanford_corenlp_pywrapper/javasrc/corenlp/JsonPipeline.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stanford_corenlp_pywrapper/javasrc/corenlp/SocketServer.java" afterPath="$PROJECT_DIR$/stanford_corenlp_pywrapper/javasrc/corenlp/SocketServer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stanford_corenlp_pywrapper/__init__.py" afterPath="$PROJECT_DIR$/stanford_corenlp_pywrapper/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.sh" afterPath="$PROJECT_DIR$/build.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proc_text_files.py" afterPath="$PROJECT_DIR$/proc_text_files.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/proc_text_files_to_stdout.py" afterPath="$PROJECT_DIR$/proc_text_files_to_stdout.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stanford_corenlp_pywrapper/sockwrap.py" afterPath="$PROJECT_DIR$/stanford_corenlp_pywrapper/sockwrap.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
     </list>
     <ignored path="stanford_corenlp_pywrapper.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -315,6 +308,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="corenlp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stanford_corenlp_pywrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stanford_corenlp_pywrapper" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="examples" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
