@@ -1,8 +1,0 @@
-<component name="libraryTable">
-  <library name="stanford-corenlp-3.6.0">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/stanford_corenlp_pywrapper/lib/stanford-corenlp-3.6.0.jar!/" />
-    </CLASSES>
-    <SOURCES />
-  </library>
-</component>

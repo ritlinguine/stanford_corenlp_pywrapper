@@ -1,8 +1,0 @@
-<component name="libraryTable">
-  <library name="jackson-all-1.9.11">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/stanford_corenlp_pywrapper/lib/jackson-all-1.9.11.jar!/" />
-    </CLASSES>
-    <SOURCES />
-  </library>
-</component>
