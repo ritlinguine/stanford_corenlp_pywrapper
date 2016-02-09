@@ -251,7 +251,7 @@ public class SocketServer {
 		log("Waiting for commands on stdin");
 		while ( (inputline=reader.readLine()) != null) {
 			JsonNode result = parseAndRunCommand(inputline);
-			writeResultToStream(result, out);
+            writeResultToStream(result, out);
 			out.flush();
 			checkTimings();
 		}
