@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
+import edu.stanford.nlp.sentiment.RNNOptions;
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
+import edu.stanford.nlp.trees.Tree;
 import org.codehaus.jackson.JsonNode;
 
 import util.JsonUtil;
@@ -86,11 +90,19 @@ public class JsonPipeline {
 		}
 		sent_info.put(keyname, (Object) tokenAnnos);
 	}
-	
+
+    static void addSentimentAnnos(Map<String, Object> sent_info, CoreMap sentence) {
+        Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
+        int sentimentValue = RNNCoreAnnotations.getPredictedClass(tree);
+        String sentiment = RNNOptions.DEFAULT_CLASS_NAMES[sentimentValue];
+        sent_info.put("sentiment", sentiment);
+        sent_info.put("sentimentValue", sentimentValue);
+    }
+
 	static void addParseTree(Map<String,Object> sent_info, CoreMap sentence) {
 		sent_info.put("parse", sentence.get(TreeCoreAnnotations.TreeAnnotation.class).toString());
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	static void addDepsCC(Map<String,Object> sent_info, CoreMap sentence) {
 		SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
@@ -257,7 +269,10 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 		case "regexner":
 			addTokenAnno(sent_info, sentence, "ner", NamedEntityTagAnnotation.class);
 			break;
-		case "sentiment": throw new RuntimeException("TODO");
+		case "sentiment":
+            addTokenAnno(sent_info, sentence, "sentiments", SentimentCoreAnnotations.SentimentClass.class);
+            addSentimentAnnos(sent_info, sentence);
+            break;
 		case "truecase": throw new RuntimeException("TODO");
 		case "parse":
 			addParseTree(sent_info,sentence);
