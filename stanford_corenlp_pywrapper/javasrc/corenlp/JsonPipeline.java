@@ -49,6 +49,7 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.time.TimeAnnotations.TimexAnnotation;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
+import org.json.XML;
 
 /** 
  * A wrapper around a CoreNLP Pipeline object that knows how to turn output annotations into JSON,
@@ -118,9 +119,9 @@ public class JsonPipeline {
 	}
 
     @SuppressWarnings("rawtypes")
-    static void addDepsXml(Map<String, Object> sent_info, CoreMap sentence) {
+    static void addDepsJson(Map<String, Object> sent_info, CoreMap sentence) {
         SemanticGraph dependencies = sentence.get(BasicDependenciesAnnotation.class);
-        sent_info.put("deps_xml", dependencies.toString(SemanticGraph.OutputFormat.XML));
+        sent_info.put("deps_json", XML.toJSONObject(dependencies.toString(SemanticGraph.OutputFormat.XML)));
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -285,12 +286,12 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 			addParseTree(sent_info, sentence);
 			addDepsCC(sent_info, sentence);
 			addDepsBasic(sent_info,sentence);
-            addDepsXml(sent_info, sentence);
+            addDepsJson(sent_info, sentence);
 			break;
 		case "depparse":
 			addDepsCC(sent_info, sentence);
 			addDepsBasic(sent_info, sentence);
-            addDepsXml(sent_info, sentence);
+            addDepsJson(sent_info, sentence);
 			break;
 		case "dcoref":
 			break;
