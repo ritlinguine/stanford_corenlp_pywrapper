@@ -116,6 +116,13 @@ public class JsonPipeline {
 		List deps = jsonFriendlyDeps(dependencies);
 		sent_info.put("deps_basic", deps);
 	}
+
+    @SuppressWarnings("rawtypes")
+    static void addDepsXml(Map<String, Object> sent_info, CoreMap sentence) {
+        SemanticGraph dependencies = sentence.get(BasicDependenciesAnnotation.class);
+        sent_info.put("deps_xml", dependencies.toString(SemanticGraph.OutputFormat.XML));
+    }
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	static void addEntityMentions(Map<String,Object> sent_info, CoreMap sentence) {
         List<CoreMap> coreMentions = sentence.get(MentionsAnnotation.class);
@@ -275,13 +282,15 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
             break;
 		case "truecase": throw new RuntimeException("TODO");
 		case "parse":
-			addParseTree(sent_info,sentence);
-			addDepsCC(sent_info,sentence);
+			addParseTree(sent_info, sentence);
+			addDepsCC(sent_info, sentence);
 			addDepsBasic(sent_info,sentence);
+            addDepsXml(sent_info, sentence);
 			break;
 		case "depparse":
-			addDepsCC(sent_info,sentence);
-			addDepsBasic(sent_info,sentence);
+			addDepsCC(sent_info, sentence);
+			addDepsBasic(sent_info, sentence);
+            addDepsXml(sent_info, sentence);
 			break;
 		case "dcoref":
 			break;
