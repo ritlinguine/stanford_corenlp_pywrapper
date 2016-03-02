@@ -3,6 +3,8 @@ package corenlp;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,8 @@ import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.trees.Tree;
 import org.codehaus.jackson.JsonNode;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import util.JsonUtil;
 import util.U;
 
@@ -118,10 +122,50 @@ public class JsonPipeline {
 		sent_info.put("deps_basic", deps);
 	}
 
+    static void buildDepsJSON(Tree tree, List<JSONObject> result, int index, int parentId, boolean sentiment) {
+        if (tree.children() == null) return;
+        for (int i = 0; i < tree.children().length; i++) {
+            JSONObject obj = new JSONObject();
+            obj.put("id", index + i);
+            obj.put("head", parentId);
+            if (sentiment) {
+                int sentimentValue = RNNCoreAnnotations.getPredictedClass(tree.children()[i]);
+                obj.put("tag", sentimentValue == -1 ? "" : sentimentValue);
+            } else {
+                obj.put("tag", tree.children()[i].isLeaf() ? "" : tree.children()[i].label());
+            }
+            obj.put("value", tree.children()[i].value() == null ? "" : tree.children()[i].value());
+            result.add(obj);
+        }
+        int temp = index + tree.children().length;
+        for (int i = 0; i < tree.children().length; i++) {
+            buildDepsJSON(tree.children()[i], result, temp, index + i, sentiment);
+            temp += tree.children()[i].flatten().size();
+        }
+    }
+
     @SuppressWarnings("rawtypes")
     static void addDepsJson(Map<String, Object> sent_info, CoreMap sentence) {
-        SemanticGraph dependencies = sentence.get(BasicDependenciesAnnotation.class);
-        sent_info.put("deps_json", XML.toJSONObject(dependencies.toString(SemanticGraph.OutputFormat.XML)));
+        Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+        List<JSONObject> result = new ArrayList<>();
+        buildDepsJSON(tree, result, 1, 0, false);
+
+        sent_info.put("deps_json", result.toString());
+    }
+
+    static void addSentimentJson(Map<String, Object> sent_info, CoreMap sentence) {
+        Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
+
+        List<JSONObject> result = new ArrayList<>();
+        JSONObject obj = new JSONObject();
+        obj.put("id", 1);
+        obj.put("head", 0);
+        obj.put("tag", RNNCoreAnnotations.getPredictedClass(tree));
+        obj.put("value", tree.value() == null ? "" : tree.value());
+        result.add(obj);
+        buildDepsJSON(tree, result, 2, 1, true);
+
+        sent_info.put("sentiment_json", result.toString());
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -280,6 +324,7 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 		case "sentiment":
             addTokenAnno(sent_info, sentence, "sentiments", SentimentCoreAnnotations.SentimentClass.class);
             addSentimentAnnos(sent_info, sentence);
+            addSentimentJson(sent_info, sentence);
             break;
 		case "truecase": throw new RuntimeException("TODO");
 		case "parse":
