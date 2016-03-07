@@ -140,7 +140,7 @@ public class JsonPipeline {
         int temp = index + tree.children().length;
         for (int i = 0; i < tree.children().length; i++) {
             buildDepsJSON(tree.children()[i], result, temp, index + i, sentiment);
-            temp += tree.children()[i].flatten().size();
+            temp += tree.children()[i].flatten().size() - 1;
         }
     }
 
