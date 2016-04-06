@@ -5,12 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
+import edu.stanford.nlp.ie.util.RelationTriple;
+import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
+import edu.stanford.nlp.naturalli.OpenIE;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.sentiment.RNNOptions;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
@@ -166,6 +165,19 @@ public class JsonPipeline {
         buildDepsJSON(tree, result, 2, 1, true);
 
         sent_info.put("sentiment_json", result.toString());
+    }
+
+    static void addOpenIERelations(Map<String, Object> sent_info, CoreMap sentence) {
+        Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
+        List<JSONObject> result = new ArrayList<>();
+        for (RelationTriple triple : triples) {
+            JSONObject obj = new JSONObject();
+            obj.put("subject", triple.subjectLemmaGloss());
+            obj.put("relation", triple.relationGloss());
+            obj.put("object", triple.objectLemmaGloss());
+            result.add(obj);
+        }
+        sent_info.put("relations", result.toString());
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -340,8 +352,13 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 			break;
 		case "dcoref":
 			break;
-		case "relation": throw new RuntimeException("TODO");
-		case "natlog": throw new RuntimeException("TODO");
+		case "relation":
+            break; // TODO NOT IMPLEMENTED, BUT NEEDED FOR OPENIE
+		case "natlog":
+            break; // TODO NOT IMPLEMENTED, BUT NEEDED FOR OPENIE
+        case "openie":
+            addOpenIERelations(sent_info, sentence);
+            break;
 		case "quote": throw new RuntimeException("TODO");
 		case "entitymentions":
 			addEntityMentions(sent_info, sentence);
