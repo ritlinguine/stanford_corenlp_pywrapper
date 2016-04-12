@@ -5,12 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
+import edu.stanford.nlp.ie.util.RelationTriple;
+import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
+import edu.stanford.nlp.naturalli.OpenIE;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.sentiment.RNNOptions;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
@@ -168,6 +167,34 @@ public class JsonPipeline {
         buildDepsJSON(tree, result, 2, 1, true);
 
         sent_info.put("sentiment_json", result.toString());
+    }
+
+    static void addOpenIERelations(Map<String, Object> sent_info, CoreMap sentence) {
+        Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
+        List<JSONObject> result = new ArrayList<>();
+        for (RelationTriple triple : triples) {
+            JSONObject obj = new JSONObject();
+            JSONObject subject = new JSONObject();
+            JSONObject relation = new JSONObject();
+            JSONObject object = new JSONObject();
+
+            subject.put("start", triple.subjectTokenSpan().first());
+            subject.put("end", triple.subjectTokenSpan().second());
+            subject.put("lemma", triple.subjectLemmaGloss());
+            obj.put("subject", subject);
+
+            relation.put("start", triple.relationTokenSpan().first());
+            relation.put("end", triple.relationTokenSpan().second());
+            relation.put("lemma", triple.relationLemmaGloss());
+            obj.put("relation", relation);
+
+            object.put("start", triple.objectTokenSpan().first());
+            object.put("end", triple.objectTokenSpan().second());
+            object.put("lemma", triple.objectLemmaGloss());
+            obj.put("object", object);
+            result.add(obj);
+        }
+        sent_info.put("relations", result.toString());
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -342,8 +369,13 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 			break;
 		case "dcoref":
 			break;
-		case "relation": throw new RuntimeException("TODO");
-		case "natlog": throw new RuntimeException("TODO");
+		case "relation":
+            break; // TODO NOT IMPLEMENTED, BUT NEEDED FOR OPENIE
+		case "natlog":
+            break; // TODO NOT IMPLEMENTED, BUT NEEDED FOR OPENIE
+        case "openie":
+            addOpenIERelations(sent_info, sentence);
+            break;
 		case "quote": throw new RuntimeException("TODO");
 		case "entitymentions":
 			addEntityMentions(sent_info, sentence);
