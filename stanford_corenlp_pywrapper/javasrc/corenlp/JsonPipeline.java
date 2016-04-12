@@ -172,9 +172,24 @@ public class JsonPipeline {
         List<JSONObject> result = new ArrayList<>();
         for (RelationTriple triple : triples) {
             JSONObject obj = new JSONObject();
-            obj.put("subject", triple.subjectLemmaGloss());
-            obj.put("relation", triple.relationGloss());
-            obj.put("object", triple.objectLemmaGloss());
+            JSONObject subject = new JSONObject();
+            JSONObject relation = new JSONObject();
+            JSONObject object = new JSONObject();
+
+            subject.put("start", triple.subjectTokenSpan().first());
+            subject.put("end", triple.subjectTokenSpan().second());
+            subject.put("lemma", triple.subjectLemmaGloss());
+            obj.put("subject", subject);
+
+            relation.put("start", triple.relationTokenSpan().first());
+            relation.put("end", triple.relationTokenSpan().second());
+            relation.put("lemma", triple.relationLemmaGloss());
+            obj.put("relation", relation);
+
+            object.put("start", triple.objectTokenSpan().first());
+            object.put("end", triple.objectTokenSpan().second());
+            object.put("lemma", triple.objectLemmaGloss());
+            obj.put("object", object);
             result.add(obj);
         }
         sent_info.put("relations", result.toString());
