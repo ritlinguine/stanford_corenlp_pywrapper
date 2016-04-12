@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import edu.stanford.nlp.dcoref.CorefChain;
+import edu.stanford.nlp.hcoref.data.CorefChain;
 import edu.stanford.nlp.dcoref.CorefCoreAnnotations.CorefChainAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.CharacterOffsetEndAnnotation;
@@ -40,6 +40,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokenBeginAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokenEndAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.hcoref.CorefCoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -52,6 +53,7 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.time.TimeAnnotations.TimexAnnotation;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
+
 import org.json.XML;
 
 /** 
@@ -298,8 +300,8 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 	}
 
 	List getCorefInfo(Annotation doc) {
-		Map<Integer, CorefChain> corefChains = doc.get(CorefChainAnnotation.class);
-//		List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
+		Map<Integer, CorefChain> corefChains = doc.get(CorefCoreAnnotations.CorefChainAnnotation.class);
+
 		List entities = new ArrayList();
 		for (CorefChain chain : corefChains.values()) {
 			List mentions = new ArrayList();
@@ -401,6 +403,7 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 		Annotation document = new Annotation(doctext);
 		pipeline.annotate(document);
 
+
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		List<Map> outSentences = Lists.newArrayList();
 
@@ -416,7 +419,6 @@ class edu.stanford.nlp.ling.CoreAnnotations$SentenceIndexAnnotation	1
 
 
 		ImmutableMap.Builder b = new ImmutableMap.Builder();
-//		b.put("text", doctext);
 		b.put("sentences", outSentences);
 		
 		if (Lists.newArrayList(annotators()).contains("dcoref")) {
